@@ -199,10 +199,11 @@
       position fixed
       top 0
       left 0
+      z-index 100
       width 100%
       height 100%
       overflow auto
-      background rgba(0,0,0,.5)
+      background rgba(7,17,27,0.8)
       opacity 1
       &.fade-enter-active, &.fade-leave-active
         transition: all 0.5s
