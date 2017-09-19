@@ -14,7 +14,7 @@
         <li class="foods-list" v-for="item in goods" ref="foodList">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li class="food-item border-1px" v-for="food in item.foods">
+            <li class="food-item border-1px" v-for="food in item.foods" @click="selectFood(food, $event)">
               <div class="icon">
                 <img width="57" height="57" :src="food.icon" alt="">
               </div>
@@ -22,10 +22,13 @@
                 <h2 class="name">{{food.name}}</h2>
                 <p class="desc">{{food.description}}</p>
                 <div class="extra">
-                  <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}</span>
+                  <span class="count">月售{{food.sellCount}}份</span><span>好评率{{food.rating}}%</span>
                 </div>
                 <div class="price">
                   <span class="now">￥{{food.price}}</span><span class="old" v-if="food.oldPrice">￥{{food.oldPrice}}</span>
+                </div>
+                <div class="cartcontrol-wrapper">
+                  <cart-control @add="addFood" :food="food"></cart-control>
                 </div>
               </div>
             </li>
@@ -33,21 +36,30 @@
         </li>
       </ul>
     </div>
-    <shopcart></shopcart>
+    <shopcart ref="shopcart" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice" :selectFoods="selectFoods"></shopcart>
+    <food :food="selectedFood" @add="addFood" ref="food"></food>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
   import Shopcart from '../shopcart/shopcart';
+  import CartControl from '../cartcontrol/cartcontrol';
+  import Food from '../food/food';
   const ERR_OK = 0;
 
   export default {
+    props: {
+      seller: {
+        type: Object
+      }
+    },
     data() {
       return {
         goods: [],
         listHeight: [],
-        scrollY: 0
+        scrollY: 0,
+        selectedFood: {}
       };
     },
     mounted() {
@@ -74,6 +86,17 @@
             return i;
           }
         }
+      },
+      selectFoods() {
+        let foods = [];
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
       }
     },
     methods: {
@@ -112,10 +135,28 @@
         let menuList = this.$refs.menuList;
         let el = menuList[index];
         this.meunScroll.scrollToElement(el, 300, 0, -100);
+      },
+      selectFood(food, event) {
+        if (!event._constructed) {
+          return;
+        }
+        this.selectedFood = food;
+        this.$refs.food.show();
+      },
+      addFood(target) {
+        this._drop(target);
+      },
+      _drop(target) {
+        // 体验优化,异步执行下落动画
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target);
+        });
       }
     },
     components: {
-      Shopcart
+      Shopcart,
+      CartControl,
+      Food
     }
   };
 </script>
@@ -219,6 +260,10 @@
               text-decoration line-through
               font-size 10px
               color #93999f
+          .cartcontrol-wrapper
+            position absolute
+            right 0
+            bottom 12px
     .shopcart
       position fixed
       left 0

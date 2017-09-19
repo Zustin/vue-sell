@@ -64,4 +64,32 @@
           bg-image('image/star48_off')
         &.half
           bg-image('image/star48_half')
+    &.star-36
+      .star-item
+        width: 15px
+        height: 15px
+        margin-right: 6px
+        background-size: 15px 15px
+        &:last-child
+          margin-right: 0
+        &.on
+          bg-image('image/star36_on')
+        &.half
+          bg-image('image/star36_half')
+        &.off
+          bg-image('image/star36_off')
+    &.star-24
+      .star-item
+        width: 10px
+        height: 10px
+        margin-right: 3px
+        background-size: 10px 10px
+        &:last-child
+          margin-right: 0
+        &.on
+          bg-image('image/star24_on')
+        &.half
+          bg-image('image/star24_half')
+        &.off
+          bg-image('image/star24_off')
 </style>
