@@ -56,6 +56,7 @@
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
+  import {formatDate} from '../../common/js/date';
   import Star from '../star/star';
   import Split from '../split/split';
   import RatingSelect from '../ratingselect/ratingselect';
@@ -111,6 +112,12 @@
         } else {
           return type === this.selectType;
         }
+      }
+    },
+    filters: {
+      formatDate(time) {
+        let date = new Date(time);
+        return formatDate(date, 'yyyy-MM-dd hh:mm');
       }
     },
     components: {
